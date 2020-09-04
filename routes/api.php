@@ -33,7 +33,7 @@ Route::post('/auth/refresh', 'AuthController@refresh');
 // Route::get('/user', 'UserController@show');
 // Route::get('/user/{id}', 'UserController@show');
 // Route::delete('/user/{id}', 'UserController@destroy');
-Route::put('/user/{id}/admin', 'UserController@isAdmin');
+Route::put('/user/{id}/admin', 'UserController@setAdmin');
 Route::put('/user', 'UserController@update');
 Route::post('/user/avatar', 'UserController@updateAvatar');
 

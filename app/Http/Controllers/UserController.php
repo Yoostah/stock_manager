@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\User;
+use Image;
 
 class UserController extends Controller
 {
@@ -176,5 +177,65 @@ class UserController extends Controller
      */
     public function destroy($id) {
         //
+    }
+
+    public function updateAvatar(Request $request) {
+        $array = ['error' => ''];
+
+        $allowedTypes = ['image/jpg', 'image/jpeg', 'image/png'];
+
+        $image = $request->file('avatar');
+
+        if($image){
+            if(in_array($image->getClientMimeType(), $allowedTypes)) {
+                $fileName = md5(time() . rand(0,99999)) . '.jpg';
+                $destPath = public_path('/media/avatars');
+
+                $img = Image::make($image->path())
+                    ->fit(200,200)
+                    ->save($destPath . '/' . $fileName);
+
+                $user = User::find($this->loggedUser['id']);
+                $user->avatar = $fileName;
+                $user->save();
+
+                $array['url'] = url('/media/avatars/' . $fileName);
+            } else {
+                $array['error'] = 'File extension not supported!';
+                return $array;
+            }
+        } else {
+            $array['error'] = 'The file was not send!';
+            return $array;
+        }
+        return $array;
+    }
+
+    public function isAdmin() {
+        $user = User::find($this->loggedUser['id']);
+        return $user->is_admin;
+    }
+
+    public function setAdmin(Request $request) {
+        $array = ['error' => ''];
+
+        if($this->isAdmin()){
+            $userId = $request->id ;
+
+            $user = User::find($userId);
+
+            if($user) {
+                $user->is_admin = !$user->is_admin;
+                $user->save();
+                return $array;
+            } else {
+                $array['error'] = 'User does not exits!';
+                return $array;
+            }
+
+        } else {
+            $array['error'] = 'Only Administrators can perform this action!';
+            return $array;
+        }
     }
 }
