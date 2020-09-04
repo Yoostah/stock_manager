@@ -108,8 +108,64 @@ class UserController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id) {
-        //
+    public function update(Request $request) {
+        $array = ['error' => ''];
+
+        $name  = $request->input('name');
+        $email  = $request->input('email');
+        $password  = $request->input('password');
+        $password_confirm  = $request->input('password_confirm');
+        $status  = $request->input('status');
+
+        $user = User::find($this->loggedUser['id']);
+
+        if($name && ($name != $user->name)) {
+            $user->name = $name;
+            $array['updated'] = true;
+        }
+
+        $allowedStatus = [
+            config('constants.STATUS.INACTIVE'),
+            config('constants.STATUS.ACTIVE'),
+            config('constants.STATUS.BLOCKED')
+        ];
+
+        if(isset($status) && ($status != $user->status_id)) {
+            if(in_array($status, $allowedStatus)){
+                $user->status_id = $status;
+                $array['updated'] = true;
+            }else{
+                $array['error'] = 'Status not Allowed!';
+                return $array;
+            }
+        }
+
+        if($email) {
+            if($email != $user->email) {
+                $emailExists = User::where('email', $email)->count();
+                if($emailExists === 0) {
+                    $user->email = $email;
+                    $array['updated'] = true;
+                } else {
+                    $array['error'] = 'This email is already in use!';
+                    return $array;
+                }
+            }
+        }
+
+        if($password && $password_confirm) {
+            if($password === $password_confirm){
+                $hash = password_hash($password, PASSWORD_DEFAULT);
+                $user->password = $hash;
+                $array['updated'] = true;
+            } else {
+                $array['error'] = 'The password and password confirmation does not match!';
+                return $array;
+            }
+        }
+
+        $user->save();
+        return $array;
     }
 
     /**

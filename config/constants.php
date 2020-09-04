@@ -2,8 +2,8 @@
 
 return [
     'STATUS' => [
-        'INACTIVE' => '0',
-        'ACTIVE' => '1',
-        'BLOCKED' => '2',
+        'INACTIVE' => '1',
+        'ACTIVE' => '2',
+        'BLOCKED' => '3',
     ]
 ];
