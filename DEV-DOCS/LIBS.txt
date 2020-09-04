@@ -1,0 +1,8 @@
+## TOKEN ##
+repo: https://github.com/tymondesigns/jwt-auth
+doc: https://jwt-auth.readthedocs.io/en/develop/
+
+## IMAGE ##
+repo: https://github.com/Intervention/image
+doc: http://image.intervention.io/
+attention: http://image.intervention.io/getting_started/installation#laravel
