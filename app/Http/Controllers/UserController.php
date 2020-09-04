@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use App\User;
 
 class UserController extends Controller
 {
@@ -19,8 +20,7 @@ class UserController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
-    {
+    public function index() {
         //
     }
 
@@ -29,8 +29,7 @@ class UserController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
-    {
+    public function create() {
         //
     }
 
@@ -40,9 +39,46 @@ class UserController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
-    {
-        //
+    public function store(Request $request) {
+
+        $array = ['error' => ''];
+
+        $name  = $request->input('name');
+        $email  = $request->input('email');
+        $password  = $request->input('password');
+
+        if( $name && $email && $password) {
+            $userExists = User::where('email', $email)->count();
+            if($userExists === 0){
+
+                $hash = password_hash($password, PASSWORD_DEFAULT);
+
+                $newUser = new User();
+                $newUser->name = $name;
+                $newUser->email = $email;
+                $newUser->password = $hash;
+                $newUser->status_id = config('constants.STATUS.ACTIVE');
+                $newUser->save();
+
+                $token = auth()->attempt([
+                    'email' => $email,
+                    'password' => $password
+                    ]);
+                if(!$token){
+                    $array['error'] = 'An Error Occurred!';
+                    return $array;
+                }
+                $array['token'] = $token;
+
+            } else {
+                $array['error'] = 'Email already in use!';
+                return $array;
+            }
+        } else {
+            $array['error'] = 'All fields as required!';
+        }
+
+        return $array;
     }
 
     /**
@@ -51,8 +87,7 @@ class UserController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
-    {
+    public function show($id) {
         //
     }
 
@@ -62,8 +97,7 @@ class UserController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
-    {
+    public function edit($id) {
         //
     }
 
@@ -74,8 +108,7 @@ class UserController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
-    {
+    public function update(Request $request, $id) {
         //
     }
 
@@ -85,8 +118,7 @@ class UserController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
-    {
+    public function destroy($id) {
         //
     }
 }
