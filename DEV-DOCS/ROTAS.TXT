@@ -1,0 +1,40 @@
+## ACESSO ##
+*POST auth/login (USUARIO, SENHA)
+*POST user (USUARIO, SENHA, EMAIL)
+
+## TOKEN ##
+POST auth/logout
+POST auth/refresh
+
+## USUÁRIOS ##
+GET user/list
+GET user
+GET user/{:id}
+DELETE user/{:id}
+PUT user (USUARIO, SENHA, SENHA2, EMAIL)
+POST user/avatar (AVATAR)
+
+## STATUS ##
+GET status/list
+GET status/{:id}
+POST status
+DELETE status/{:id}
+PUT status (NOME)
+
+## ITEMS ##
+GET item/list
+GET item/{:id}
+POST item (NOME, DESCRICAO, ESTOQUE, CATEGORIA)
+DELETE item/{:id}
+PUT item (NOME, DESCRICAO, ESTOQUE, CATEGORIA)
+
+## CATEGORIA DE PRODUTOS ##
+GET category/list
+GET category/{:id}
+POST category (NOME, DESCRICAO, ESTOQUE, CATEGORIA)
+DELETE category/{:id}
+PUT category (NOME, DESCRICAO, ESTOQUE, CATEGORIA)
+
+## BUSCA ##
+
+GET search (txt)
